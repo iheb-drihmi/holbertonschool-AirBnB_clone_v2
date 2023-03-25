@@ -10,23 +10,18 @@ class FileStorage:
 
     def all(self, cls=None):
         """Returns a dictionary of models currently in storage"""
-        if cls is not None:
-            new_dict = {}
-            for key, value in self.__objects.items():
-                if cls == value.__class__ or cls == value.__class__.__name__:
-                    new_dict[key] = value
-                return new_dict
-        return self.__objects
+        if cls is None:
+            return FileStorage.__objects
+        else:
+            dict = {}
+            for key, value in FileStorage.__objects.items():
+                if isinstance(value, cls):
+                    dict[key] = value
+        return dict
 
     def new(self, obj):
         """Adds new object to storage dictionary"""
-        try:
-            obj_dict = obj.to_dict()
-            obj_id = obj_dict['id']
-            obj_class = obj_dict['__class__']
-            self.FileStorage[obj_class + '.' + obj_id] = obj
-        except (AttributeError, KeyError) as e:
-            print(f"Error adding object: {e}")
+        self.all().update({obj.to_dict()['__class__'] + '.' + obj.id: obj})
 
     def save(self):
         """Saves storage dictionary to file"""
@@ -57,13 +52,14 @@ class FileStorage:
             with open(FileStorage.__file_path, 'r') as f:
                 temp = json.load(f)
                 for key, val in temp.items():
-                        self.all()[key] = classes[val['__class__']](**val)
+                    self.all()[key] = classes[val['__class__']](**val)
         except FileNotFoundError:
             pass
 
     def delete(self, obj=None):
-        """Function that delete obj from __objects if it is inside"""
-        if obj is not None:
+        """Deletes obj from __objects if obj is not None"""
+        if obj is None:
+            return
+        else:
             key = "{}.{}".format(type(obj).__name__, obj.id)
-            if key in self.__objects:
-                del self.__objects[key]
+            self.__objects.pop(key, None)
