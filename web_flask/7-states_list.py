@@ -1,5 +1,4 @@
 #!/usr/bin/python3
-'''Taskss'''
 from flask import Flask, render_template
 from models import storage
 from models import State
