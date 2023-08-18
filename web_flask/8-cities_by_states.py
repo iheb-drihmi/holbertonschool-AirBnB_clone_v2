@@ -1,5 +1,4 @@
 #!/usr/bin/python3
-#!/usr/bin/python3
 '''  Starts a flask web application '''
 from models import storage
 from models.state import State
