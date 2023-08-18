@@ -1,5 +1,4 @@
 #!/usr/bin/python3
-#!/usr/bin/python3
 '''Taskss'''
 from flask import Flask
 from models import storage
